@@ -30,7 +30,16 @@ uv run pytest -q
 uv run python -m app.ask "LoRAとは何ですか？"
 ```
 
+会話履歴を保ったまま質問を続けるには、対話モードを使います。質問を入力し、空行で終了します。最初の質問をコマンドライン引数で渡すこともできます。
+
+```bash
+uv run python -m app.ask --interactive
+uv run python -m app.ask --interactive "LoRAとは何ですか？"
+```
+
 詳しい手順は [lectures/01/problem.md](lectures/01/problem.md) を見てください。
+
+第3回の用語集ベースのエージェントを使う場合は `uv run python -m app.agent --glossary "LoRAとは？"` を実行します。通常のエージェントは第5回のRAG検索を使います。
 
 ## 第5回：講義資料を検索する
 
