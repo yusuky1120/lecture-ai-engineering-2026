@@ -45,6 +45,15 @@ INSTRUCTIONS = """\
 - 宿題の答えそのものは書かず、考え方のヒントで導く。
 """
 
+GLOSSARY_INSTRUCTIONS = """\
+あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
+- 用語や講座に固有のことを答える前に、必ず search_glossary で用語集を確認する。
+- 回の内容を聞かれたら get_lecture_summary を使う。
+- 用語集に見つからないことは、推測で断定せず「用語集にはない」と伝える。
+- 回答の最後に、関係する回（第N回）を示す。
+- 宿題の答えそのものは書かず、考え方のヒントで導く。
+"""
+
 TREE_INSTRUCTIONS = """\
 あなたはAIエンジニアリング講座（AIE2026）の学習支援エージェントです。
 - 対象は第1〜3回の本講義資料。まず browse_tree で講義一覧を見る。
@@ -179,6 +188,7 @@ def main() -> None:
     parser.add_argument("--trace", action="store_true", help="ツール呼び出しを表示する")
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--mcp", action="store_true", help="第5回: ツールを MCP サーバー（app/mcp_servers.json）から受け取る")
+    modes.add_argument("--glossary", action="store_true", help="第3回: 用語集ベースのツールを使って答える")
     modes.add_argument("--graph", action="store_true", help="検索結果からグラフをたどり、候補ページを読んで答える")
     modes.add_argument("--tree", action="store_true", help="目次をたどり、必要なページを読んで答える")
     modes.add_argument("--full-context", action="store_true", help="検索せず、lectures.jsonの全資料を一度に渡す")
@@ -191,6 +201,8 @@ def main() -> None:
         mode = target.override(instructions=TREE_INSTRUCTIONS, tools=[tools.browse_tree])
     elif args.graph:
         mode = target.override(instructions=GRAPH_INSTRUCTIONS, tools=[tools.search_graph])
+    elif args.glossary:
+        mode = target.override(instructions=GLOSSARY_INSTRUCTIONS, tools=[tools.search_glossary, tools.get_lecture_summary, tools.make_quiz])
     with mode:
         if args.list_tools:
             if args.full_context:
